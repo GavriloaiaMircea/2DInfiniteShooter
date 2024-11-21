@@ -10,6 +10,11 @@ public class GunController : MonoBehaviour
     [SerializeField] private float gunDistance = 1.2f;
     private bool gunFacingRight = true;
     // Update is called once per frame
+
+    [Header("Bullet")]
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private float bulletSpeed;
+
     void Update()
     {
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -22,7 +27,7 @@ public class GunController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Shoot();
+            Shoot(direction);
         }
 
         GunFlipController(mousePos);
@@ -46,9 +51,13 @@ public class GunController : MonoBehaviour
         gun.localScale = new Vector3(gun.localScale.x, gun.localScale.y * -1, gun.localScale.z);   
     }
 
-    public void Shoot()
+    public void Shoot(Vector3 direction)
     {
-        Console.Write("Shoot");
         gunAnim.SetTrigger("Shoot");
+
+        GameObject newBullet = Instantiate(bulletPrefab, gun.position, gun.rotation);
+        newBullet.GetComponent<Rigidbody2D>().velocity = direction.normalized * bulletSpeed;
+
+        Destroy(newBullet, 7);
     }
 }
